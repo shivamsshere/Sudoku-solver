@@ -1,0 +1,155 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+#define EMPTY 0
+#define N 9
+#include<stdlib.h>
+
+bool Find_empty(int grid[N][N], int& row, int& col);
+bool isSafe(int grid[N][N], int row, int col, int num);
+
+
+bool Solve_it(int grid[N][N])
+{
+	int row, col;
+
+	if (!Find_empty(grid, row, col))
+		// success!
+		return true;
+
+
+	for (int num = 1; num <= 9; num++)
+	{
+
+
+		if (isSafe(grid, row, col, num))
+		{
+
+
+			grid[row][col] = num;
+
+
+			if (Solve_it(grid))
+				return true;
+
+
+			grid[row][col] = EMPTY;
+		}
+	}
+
+
+	return false;
+}
+
+bool Find_empty(int grid[N][N],
+							int& row, int& col)
+{
+	for (row = 0; row < N; row++)
+		for (col = 0; col < N; col++)
+			if (grid[row][col] == EMPTY)
+				return true;
+	return false;
+}
+
+bool UsedInRow(int grid[N][N], int row, int num)
+{
+	for (int col = 0; col < N; col++)
+		if (grid[row][col] == num)
+			return true;
+	return false;
+}
+
+
+bool UsedInCol(int grid[N][N], int col, int num)
+{
+	for (int row = 0; row < N; row++)
+		if (grid[row][col] == num)
+			return true;
+	return false;
+}
+
+
+bool UsedInBox(int grid[N][N], int boxStartRow,
+			int boxStartCol, int num)
+{
+	for (int row = 0; row < 3; row++)
+		for (int col = 0; col < 3; col++)
+			if (grid[row + boxStartRow]
+					[col + boxStartCol] ==
+									num)
+				return true;
+	return false;
+}
+
+
+bool isSafe(int grid[N][N], int row,
+			int col, int num)
+{
+
+	return !UsedInRow(grid, row, num)
+		&& !UsedInCol(grid, col, num)
+		&& !UsedInBox(grid, row - row % 3,
+						col - col % 3, num)
+		&& grid[row][col] == EMPTY;
+}
+
+
+void print_it(int grid[N][N])
+{
+	for (int row = 0; row < N; row++)
+	{
+		for (int col = 0; col < N; col++)
+			cout << grid[row][col] << " ";
+		cout << endl;
+	}
+cout<<"\n\n\n";
+}
+
+
+int main()
+{
+    int ch;
+    int grid[N][N] = {
+                    { 1, 0, 6, 0, 7, 8, 0, 3, 0  },
+					{ 0, 5, 7, 3, 4, 9, 0, 6, 2 },
+					{ 2, 9, 3, 6, 0, 5, 0, 0, 7 },
+					{ 0, 0, 0, 8, 0, 1, 6, 0, 4 },
+					{ 4, 6, 1, 0, 0, 0, 2, 8, 9 },
+					{ 5, 8, 0, 0, 6, 4, 3, 0, 0 },
+					{ 7, 3, 4, 1, 9, 6, 5, 0, 8 },
+					{ 6, 1, 8, 7, 0, 2, 4, 9, 3 },
+					{ 0, 0, 0, 0, 8, 0, 0, 1, 0 } };
+
+    while(1)
+    {
+    cout<<"\t\t...OPTIONS...\n";
+    cout<<"1) Use the default Sudoku\n";
+    cout<<"2) Enter your own 9 by 9 Sudoku\n";
+    cout<<"3) Exit\n\n";
+    cout<<"Enter any option.. ";
+    cin>>ch;
+
+    if(ch>=3)
+    {
+        cout<<"\n\nExiting program.....\n";
+        exit(0);
+    }
+    if(ch==2)
+    {
+        cout<<"Enter the Sudoku row by row \n\n";
+        for(int i=0;i<N;i++)
+            {
+               for(int j=0;j<N;j++)
+                    cin>>grid[i][j];
+            }
+    }
+
+	if (Solve_it(grid) == true)
+		print_it(grid);
+	else
+		cout << "No solution exists";
+    }
+	return 0;
+}
+
